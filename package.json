@@ -1,0 +1,45 @@
+{
+  "name": "habithings",
+  "version": "0.0.1",
+  "description": "HabiThings",
+  "private": false,
+  "homepage": "https://github.com/habithings/habithings",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/habithings/habithings.git"
+  },
+  "keywords": [
+    "automation", "domotica", "habitat", "home", "house", "internet", "IoT", "rf433", "rfxcom", "things", "z-wave" 
+  ],
+  "main": "habithings.js",
+  "author": {
+    "name": "Osmond van Hemert",
+    "email": "ovhemert@habithings.com",
+    "url": "http://www.osmondvanhemert.nl"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/habithings/habithings/blob/master/LICENSE"
+    }
+  ],
+  "engines": {
+    "node": ">= 0.10.x"
+  },
+  "dependencies": {
+    "express": "~3.4.7",
+    "requirejs": "~2.1.9",
+    "backbone": "~1.1.0",
+    "nconf": "~0.6.9",
+    "underscore": "~1.5.2",
+    "nedb": "~0.9.4",
+    "uuid": "~1.4.1",
+    "socket.io": "~0.9.16",
+    "passport": "~0.2.0",
+    "passport-local": "~0.1.6",
+    "connect-flash": "~0.1.1",
+    "connect-nedb-session": "0.0.2",
+    "passport.socketio": "~3.0.0",
+    "moment": "~2.5.1"
+  }
+}
