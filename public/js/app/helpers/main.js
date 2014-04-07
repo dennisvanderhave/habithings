@@ -7,7 +7,9 @@
     controller.prototype.callServer = function (options, callback) {
         var self = this;
         options = options || {};
-        var urlBase = 'http://localhost:8080';
+        var serverAddress = self.app.store.settings.get('server_address');
+        var serverPort = self.app.store.settings.get('server_port');
+        var urlBase = 'http://' + serverAddress + ':' + serverPort;
         var urlPath = options.path || '';
         var url = urlBase + '/' + urlPath;
         var type = options.type || 'GET';
@@ -100,13 +102,14 @@
         var options = { path: 'auth/check'};
         self.callServer(options, function(result) {
             if (result == 'OK') {
-                if (callback) { callback(true); }
+                if (callback) { callback(false, true); }
+            } else if (result == 'FAILED') {
+                if (callback) { callback(false, false); }
             } else {
-                if (callback) { callback(false); }
+                if (callback) { callback(true, false); }
             }
         });
     }
-
     controller.prototype.onResize = function () {
         var self = this;
 

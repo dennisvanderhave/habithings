@@ -64,13 +64,13 @@
         onUserChange: function() {
             var self = this;
 
-            self.app.main.isAuthenticated(function(result) {
-            if (result) {
-                self.$el.find('li[data-id="nav-login"]').hide();    
-                self.$el.find('li[data-id="nav-user"]').show();    
-            } else {
-                self.$el.find('li[data-id="nav-user"]').hide();
-                self.$el.find('li[data-id="nav-login"]').show();
+            self.app.main.isAuthenticated(function(err, result) {
+                if (result) {
+                    self.$el.find('li[data-id="menu"]').removeClass('hidden').addClass('visible-xs');    
+                    $('#menu').removeClass('hidden').addClass('hidden-xs col-sm-2 col-md-3 sidebarstyle1');
+                } else {
+                    self.$el.find('li[data-id="menu"]').removeClass('visible-xs').addClass('hidden');
+                    $('#menu').removeClass('hidden-xs col-sm-2 col-md-3 sidebarstyle1').addClass('hidden');
                 }
             });
         }

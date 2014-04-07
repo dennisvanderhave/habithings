@@ -5,8 +5,8 @@
             var self = this;
             if (!self.basePath) {
                 var app = require('app');
-                var serverAddress = app.store.settings.get('server_address') || 'localhost';
-                var serverPort = app.store.settings.get('server_port') || '8080';
+                var serverAddress = app.store.settings.get('server_address');
+                var serverPort = app.store.settings.get('server_port');
                 self.basePath = 'http://' + serverAddress + ':' + serverPort + '/api';
             }
             return self.basePath + '/' + self.path;

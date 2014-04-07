@@ -5,6 +5,8 @@ lib-cov
 *.dat
 *.out
 *.pid
+*.gitattributes
+*.gitignore
 *.gz
 *.njsproj
 *.sln

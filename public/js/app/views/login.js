@@ -16,6 +16,11 @@
             tpl += '          <div class="panel-body container-fluid">';
             tpl += '            <div class="row">';
             tpl += '              <div class="col-xs-12">';
+            tpl += '                <div class="input-group"><span class="input-group-addon"><i class="icon icon-fw icon-server"></i></span><input data-id="server" type="text" class="form-control" placeholder="Server address"></div>';
+            tpl += '              </div>';
+            tpl += '            </div>';
+            tpl += '            <div class="row">';
+            tpl += '              <div class="col-xs-12">';
             tpl += '                <div class="input-group"><span class="input-group-addon"><i class="icon icon-fw icon-user"></i></span><input data-id="username" type="text" class="form-control" placeholder="Username"></div>';
             tpl += '              </div>';
             tpl += '            </div>';
@@ -43,6 +48,7 @@
         onLoginClick: function(e) {
             var self = this;
 
+            var server = self.$el.find('input[data-id="server"]').val();
             var username = self.$el.find('input[data-id="username"]').val();
             var password = self.$el.find('input[data-id="password"]').val();
             var options = { path: 'auth/login', type: 'POST', data: { username: username, password: password } };
@@ -55,23 +61,18 @@
                     self.goTo('login');
                 }
             });
-
-            //$.ajax({
-            //    url: 'http://localhost:8080/auth/login',
-            //    type: 'POST',
-            //    data: 'username=' + username + '&password=' + password, // or $('#myform').serializeArray()
-            //    success: function() {  
-            //        vent.trigger('user:login', username);
-            //        self.goTo('home');
-            //    }, 
-            //    error: function() {  
-            //        vent.trigger('user:logout');
-            //        self.goTo('login');
-            //    } 
-            //});                
         },
         onRender: function () {
             var self = this;
+
+            var server = '';
+            var serverAddress = self.app.store.settings.get('server_address');
+            if (serverAddress) {
+                server += serverAddress;    
+                var serverPort = self.app.store.settings.get('server_port');
+                if (serverPort) { server += ':' + serverPort; }
+                self.$el.find('input[data-id="server"]').val(server);
+            }
 
         }
     });

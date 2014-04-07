@@ -3,8 +3,8 @@
         initialize: function (options) {
             var self = this;
             self._app = require('app');
-            self._serverAddress = self._app.store.settings.get('server_address') || 'localhost';
-            self._serverPort = self._app.store.settings.get('server_port') || '8080';
+            self._serverAddress = self._app.store.settings.get('server_address');
+            self._serverPort = self._app.store.settings.get('server_port');
             self._serverUri = 'http://' + self._serverAddress + ':' + self._serverPort;
             self.connect();
         },

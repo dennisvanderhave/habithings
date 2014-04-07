@@ -12,7 +12,7 @@
         onRender: function () {
             var self = this;
 
-            self.app.main.isAuthenticated(function(result) {
+            self.app.main.isAuthenticated(function(err, result) {
                 if (result) {
                     self.goTo('devices');
                 } else {

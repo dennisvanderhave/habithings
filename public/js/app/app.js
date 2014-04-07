@@ -26,6 +26,14 @@
                 }
             );
         });
+        
+        App.addInitializer(function (options) {
+            // setup
+            var serverAddress = App.store.settings.get('server_address');
+            if (!serverAddress) { App.store.settings.set('server_address', document.location.hostname) }
+            var serverPort = App.store.settings.get('server_port');
+            if (!serverPort) { App.store.settings.set('server_port', document.location.port) }
+        });
 
         // routes
         App.addInitializer(function (options) {
