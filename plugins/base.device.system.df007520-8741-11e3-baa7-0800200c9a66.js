@@ -47,7 +47,20 @@
                     }
                 }
                 if (args.callback) { args.callback(result); };
-            }                            
+            },
+            getSerialPorts: function(iface, args) {
+                var _ = require('underscore');
+                var serialport = require('serialport');
+                serialport.list(function (err, ports) {
+                    if (!err && ports.length > 0) {
+                        var items = [];
+                        ports.forEach(function(port) {
+                            items.push({ id: port.comName, name: port.comName, pnpId: port.pnpId, manufacturer: port.manufacturer });
+                        });
+                        if (args.callback) { args.callback(items); };
+                    }
+                });
+            }                                        
         }
     }
 

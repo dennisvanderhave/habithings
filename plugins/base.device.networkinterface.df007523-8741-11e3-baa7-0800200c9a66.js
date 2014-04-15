@@ -32,9 +32,6 @@
             var _ = require('underscore');
             // initialize
             self.command('protocol:getNetworkInterfaces', { callback: function(result) {
-                //_.each(result, function(iface) {
-                //    if (self.attribute('code') == iface.name) { self._isInternet = iface.default; }
-                //});
                 // http clients interface
                 var optProtocol = { 'code': 'http', 'interface': 'http', 'name': 'Http' };
                 self.command('interface:init', optProtocol);

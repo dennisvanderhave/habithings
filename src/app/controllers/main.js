@@ -401,27 +401,6 @@
         return entity;
 
     }
-    //controller.prototype.getEntityConfigHash = function(entity) {
-    //    var self = this;
-    //    var md5 = '';
-    //    if (entity) {
-    //        var arrMD5 = [];
-    //        if (entity.get('pluginId')) { arrMD5.push(entity.get('pluginId')); }
-    //        if (entity.get('protocolId')) { arrMD5.push(entity.get('protocolId')); }
-    //        var plugin = entity.plugin || self.plugins.get(entity.get('pluginId')).plugin;
-    //        if (plugin && plugin.definition && plugin.definition.fields) {
-    //            _.keys(plugin.definition.fields, function(key) {
-    //                var field = plugin.definition.fields[key];
-    //                if (field.config) { 
-    //                    arrMD5.push(entity.setting(key)); 
-    //                }    
-    //            });
-    //        }
-    //        var preMD5 = arrMD5.join(',');
-    //        md5 = require('crypto').createHash('md5').digest('base64');
-    //    }
-    //    return md5;
-    //}
     controller.prototype.getPluginTemplateFiles = function () {
         // return: array of { uuid, origin, type, location }
         var results = [];
@@ -661,11 +640,10 @@
                 var pluginId = device.get('pluginId');
                 self.createPluginModel(pluginId, function(model) {  
                     if (model) {
-                        //var instance = _.defaults(device, model);
                         var instance = device; instance.plugin = model;
                         self.preparePluginModelInstance(instance, 'device');
                         self.devices.add(instance, { merge: true });
-                        self.doMessageBus('device', instance.id, 'load');
+                        //self.doMessageBus('device', instance.id, 'load');
                         if (callback) { callback(instance); }
                     } else {
                         if (callback) { callback(); }
@@ -714,6 +692,7 @@
                         var instance = plugin; instance.plugin = model;
                         self.preparePluginModelInstance(instance, 'plugin');
                         self.plugins.add(instance, { merge: true });
+                        self.doMessageBus('plugin', instance.id, 'load');
                         if (callback) { callback(instance); }
                     } else {
                         if (callback) { callback(); }
@@ -878,7 +857,9 @@
                 if (device.plugin.commands.poll) { 
                     device.plugin.commands.poll(argsLoad); 
                 }
-            }           
+            } else if (!device.status('loaded')) { 
+                self.doMessageBus('device', uuid, 'load');           
+            }
         }
     }
     controller.prototype.preparePluginModelInstance = function(instance, type) {
@@ -976,26 +957,33 @@
 
         // plugin
         var plugin = instance.plugin;
-        plugin._uuid = instance.get('uuid');
-        plugin._type = type;
+        plugin.instance = plugin.instance || {};
+        plugin.instance._uuid = instance.get('uuid');
+        plugin.instance._type = type;
+        plugin.cache = plugin.cache || {};
+
         plugin.attribute = function(key) {
-            var item = self.getEntity(this._type, this._uuid);
+            var item = self.getEntity(this.instance._type, this.instance._uuid);
             return (item) ? item.get(key) : null; 
         }
         plugin.command = function(msg, args) { 
             var busMsg = 'command:' + msg;
-            self.onMessageBus(this._type, this._uuid, busMsg, args);
+            self.onMessageBus(this.instance._type, this.instance._uuid, busMsg, args);
+        }
+        plugin.isInstance = function() {
+            var res = (this.instance._type == this.type);
+            return res;
         }
         plugin.trigger = function(msg, args) { 
             var busMsg = 'trigger:' + msg;
-            self.onMessageBus(this._type, this._uuid, busMsg, args);
+            self.onMessageBus(this.instance._type, this.instance._uuid, busMsg, args);
         }
         plugin.setting = function(key, value) {
-            var item = self.getEntity(this._type, this._uuid);
+            var item = self.getEntity(this.instance._type, this.instance._uuid);
             return (item) ? item.setting(key, value) : null; 
         }
         plugin.status = function(key) {
-            var item = self.getEntity(this._type, this._uuid);
+            var item = self.getEntity(this.instance._type, this.instance._uuid);
             return (item) ? item.status(key) : null; 
         }
 
@@ -1059,6 +1047,14 @@
                 }
                 return;
             }
+            //  protocol:<command>
+            if (aMessage.length >= 2 && aMessage[0] == 'protocol') {
+                var command = aMessage[1];
+                if (command && model.plugin.protocol &&  model.plugin.protocol[command]) { 
+                    model.plugin.protocol[command](args); 
+                }
+                return;
+            }
             //  command:<function>
             if (aMessage.length >= 2 && aMessage[0] == 'command') {
                 var command = aMessage[1];
@@ -1100,6 +1096,23 @@
                 });
                 return;
             }
+            // command:interface:<code>:<command>
+            if (aMessage.length >= 4 && aMessage[0] == 'command' && aMessage[1] == 'interface') {
+                var iface = aMessage[2];
+                var command = aMessage[3];
+                var protocols = self.protocols.filterByDeviceId(model.id).filterByInterface(iface);
+                if (protocols.length > 0) {
+                    var protocolId = protocols.models[0].id;
+                    var cba = args;
+                    var cbp = _.omit(args, 'callback');
+                    cbp.callback = function(result) {
+                        if (cba.callback) { cba.callback(result); }
+                    }
+                    self.doMessageBus('protocol', protocolId, command, cbp);                    
+                }
+                return;
+            }
+            // command:protocol:<command>
             if (aMessage.length >= 3 && aMessage[0] == 'command' && aMessage[1] == 'protocol' && args) {
                 // forward all these commands to the protocol the device uses
                 var command = aMessage[2];
@@ -1115,7 +1128,7 @@
                 return;
             }
             if (msg == 'trigger:setting:change' && args) {
-                console.log('[EVENT ] Device "' + model.get('name') + '" setting "' + args.key + '" changed to "' + args.value + '"');
+                //console.log('[EVENT ] Device "' + model.get('name') + '" setting "' + args.key + '" changed to "' + args.value + '"');
                 // if a configuration setting changed, 
                 // save any setting change
                 model.save();
@@ -1181,6 +1194,22 @@
                 if (model.plugin.commands.discover) { model.plugin.commands.discover(argsDiscover); }
                 return;
             }
+            //  load
+            if (msg == 'load') {
+                var argsLoad = {};
+                argsLoad.callback = function(result) { model.status('loaded', (result)); }
+                var loaded = model.status('loaded');
+                if (!loaded && model.plugin.commands.load) { model.plugin.commands.load(argsLoad); }
+                return;
+            }
+            //  protocol:<command>
+            if (aMessage.length >= 2 && aMessage[0] == 'protocol') {
+                var command = aMessage[1];
+                if (command && model.plugin.protocol &&  model.plugin.protocol[command]) { 
+                    model.plugin.protocol[command](args); 
+                }
+                return;
+            }
             // perform an action on a plugin
             if (aMessage.length > 0) {
                 var command = aMessage[0];
@@ -1198,12 +1227,17 @@
                 return;
             }     
             if (aMessage.length >= 3 && aMessage[0] == 'command' && aMessage[1] == 'protocol') {
-                // forward all protocol commands to all active protocols
+                // forward all protocol commands to all active protocols if none specifically specified
                 var command = aMessage[2];
                 var pCode = model.plugin.definition.protocol;
                 var plugins = self.plugins.filterByType('protocol').filterByCode(pCode);
                 var pluginIds = plugins.pluck('uuid');
-                var protocols = self.protocols.filterByPluginId(pluginIds);
+                var protocols;
+                if (args && args.protocol) {
+                    protocols = self.protocols.filterById(args.protocol);
+                } else {
+                    protocols = self.protocols.filterByPluginId(pluginIds);
+                }
                 protocols.each(function(protocol) {
                     var cba = args;
                     var cbp = _.omit(args, 'callback');
@@ -1243,6 +1277,20 @@
             }
         }
         if (type == 'event') { // event received from a protocol
+            // command:client:<command>
+            if (aMessage.length >= 3 && aMessage[0] == 'command' && aMessage[1] == 'client') {
+                var command = aMessage[2];
+                // send to clients of protocol
+                self.devices.filterByProtocolId(model.id).each(function(device) {
+                    self.doMessageBus('device', device.id, 'protocol:' + command, args);
+                });
+                // send to plugins that implement this protocol type
+                self.plugins.filterByType('device').filterByProtocol(model.plugin.code).each(function(plugin) {
+                    self.doMessageBus('plugin', plugin.id, 'protocol:' + command, args);
+                });
+
+                return;
+            }
             // command:server:<command>
             if (aMessage.length >= 3 && aMessage[0] == 'command' && aMessage[1] == 'server') {
                 var command = aMessage[2];
@@ -1320,7 +1368,7 @@
                 return;
             }
             if (msg == 'trigger:setting:change' && args) {
-                console.log('[EVENT ] Task "' + model.get('name') + '" setting "' + args.key + '" changed to "' + args.value + '"');
+                //console.log('[EVENT ] Task "' + model.get('name') + '" setting "' + args.key + '" changed to "' + args.value + '"');
                 // save any setting change
                 model.save();
                 // check if this is a trigger we need to respond to

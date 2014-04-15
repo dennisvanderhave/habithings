@@ -12,6 +12,10 @@
                 var self = this;
                 return self.filterByAttribute('deviceId', value);
             },
+            filterById: function (value) {
+                var self = this;
+                return self.filterByAttribute('uuid', value);
+            },
             filterByInterface: function (value) {
                 var self = this;
                 return self.filterByAttribute('interface', value);

@@ -19,6 +19,13 @@
                 var self = this;
                 return self.filterByAttribute('uuid', value);
             },
+            filterByProtocol: function (value) {
+                var self = this;
+                var filtered = self.filter(function (item) {
+                    return (item.plugin && item.plugin.definition && item.plugin.definition.protocol && item.plugin.definition.protocol == value);
+                });
+                return new self.constructor(filtered);    
+            },
             filterByType: function (value) {
                 var self = this;
                 return self.filterByAttribute('type', value);

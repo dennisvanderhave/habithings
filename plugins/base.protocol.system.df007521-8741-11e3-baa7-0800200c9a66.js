@@ -19,6 +19,9 @@
         },
         getNetworkInterfaces: function() {
             this.command('server:getNetworkInterfaces', arguments[0]);
+        },
+        getSerialPorts: function() {
+            this.command('server:getSerialPorts', arguments[0]);
         }
     }
 }});

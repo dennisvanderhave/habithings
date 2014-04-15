@@ -78,6 +78,12 @@
         var device = self.funcs.devices.get(id);
         if (device && allowed) {
             var dev_fields = device.plugin.definition.fields || {};
+            _.each(dev_fields, function(field) {
+                if (field.select && device.plugin.functions && device.plugin.functions[field.select]) {
+                    var select = device.plugin.functions[field.select]();
+                    field.select = select;
+                }
+            });
             var dev_settings = _.pick(device.get('settings') || {}, _.keys(dev_fields));
             result = { 
                 // device info

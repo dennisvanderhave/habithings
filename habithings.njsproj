@@ -49,12 +49,17 @@
   <ItemGroup>
     <Compile Include="plugins\base.device.networkinterface.df007523-8741-11e3-baa7-0800200c9a66.js" />
     <Compile Include="plugins\base.device.openweathermaporg.df007525-8741-11e3-baa7-0800200c9a66.js" />
+    <Compile Include="plugins\base.device.rfacswitch.df00752c-8741-11e3-baa7-0800200c9a66.js" />
+    <Compile Include="plugins\base.device.rfxcom.df00752a-8741-11e3-baa7-0800200c9a66.js" />
     <Compile Include="plugins\base.protocol.http.df007524-8741-11e3-baa7-0800200c9a66.js.js" />
+    <Compile Include="plugins\base.protocol.rfac.df00752b-8741-11e3-baa7-0800200c9a66.js" />
+    <Compile Include="plugins\base.protocol.serial.df007529-8741-11e3-baa7-0800200c9a66.js" />
     <Compile Include="plugins\base.protocol.system.df007521-8741-11e3-baa7-0800200c9a66.js" />
     <Compile Include="plugins\base.device.system.df007520-8741-11e3-baa7-0800200c9a66.js" />
     <Compile Include="plugins\base.device.cpu.df007522-8741-11e3-baa7-0800200c9a66.js" />
     <Compile Include="plugins\base.task.compare.df007527-8741-11e3-baa7-0800200c9a66.js" />
     <Compile Include="plugins\base.task.greaterthan.df007526-8741-11e3-baa7-0800200c9a66.js" />
+    <Compile Include="plugins\base.device.serialport.df007528-8741-11e3-baa7-0800200c9a66.js" />
     <Compile Include="public\js\app\app.js" />
     <Compile Include="public\js\app\controllers\main.js" />
     <Compile Include="public\js\app\controllers\socket.js" />
