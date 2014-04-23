@@ -7,6 +7,21 @@
     factory.prototype.init = function() {
         var self = this;
 
+        // logging
+        if (!fs.existsSync('logs')) { fs.mkdirSync('logs'); }
+        var env = (process.argv && process.argv[2] == 'dev') ? 'dev' : 'prod'; //process.env.NODE_ENV || 'dev';
+        var devMode =  (env == 'dev') ? true : false;
+        var logLevel = (env == 'dev') ? 'silly' : 'info';
+        var winston = require('winston');
+        var logger = new (winston.Logger)({ // silly=0, verbose=1, info=2, warn=3, debug=4, error=5
+            transports: [
+                new (winston.transports.Console)({ colorize: true, level: logLevel }),
+                new (winston.transports.File)({ colorize: true, filename: './logs/main.log', level: logLevel })
+            ]
+        });
+        self.app.set('logger', logger);
+        self.app.set('debug', devMode);
+
         // configuration
         Config.read();
         self.app.set('config', Config);
@@ -59,7 +74,10 @@
             if (result) {
                 var server = app.get('server');
                 server.listen(port, function() {
-                    console.log('HabiThings listening on port ', port);
+                    main.log('info', 'HabiThings successfully started');
+                    var ip = require('../libs/ip').address();
+                    main.log('info', 'Please connect with your browser to http://%s:%s', ip, port);
+                    if (app.get('debug')) { main.log('warn', 'Running in development mode'); }
                 });
             }    
         });

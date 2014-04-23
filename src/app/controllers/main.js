@@ -10,7 +10,6 @@
         self.permissions = new Permissions();
         self.usergroups = new UserGroups();
         self.users = new Users();
-
     }
 
     controller.prototype.defaults = {
@@ -144,7 +143,7 @@
         if (!type || !id || !msg) { return; }
 
         if (type != 'system') {
-            //console.log('[EVENT ] ' + type + ':' + id + ' => ' + msg);
+            //self.log('debug', '[EVENT ] ' + type + ':' + id + ' => ' + msg);
         }
 
         if (type == 'device') {
@@ -169,7 +168,7 @@
         
        if (!type || !id || !msg) { return; }
 
-       //console.log('[ACTION] ' + type + ':' + id + ' => ' + msg);
+       //self.log('debug', '[ACTION] ' + type + ':' + id + ' => ' + msg);
 
         if (type == 'device') {
             var model = self.devices.get(id);
@@ -832,6 +831,12 @@
             if (callback) { callback(results); }
         });
     }
+    controller.prototype.log = function() {
+        var self = this;
+        var logger = self.app.get('logger');
+        var args = Array.prototype.slice.call(arguments);
+        logger.log.apply(logger, args);
+    }
     controller.prototype.pollDevice = function(uuid, force) {
         var self = this;
         var device = self.getEntity('device', uuid);
@@ -973,6 +978,9 @@
         plugin.isInstance = function() {
             var res = (this.instance._type == this.type);
             return res;
+        }
+        plugin.log = function(msg) {
+            self.log('silly', msg);
         }
         plugin.trigger = function(msg, args) { 
             var busMsg = 'trigger:' + msg;
@@ -1128,7 +1136,7 @@
                 return;
             }
             if (msg == 'trigger:setting:change' && args) {
-                //console.log('[EVENT ] Device "' + model.get('name') + '" setting "' + args.key + '" changed to "' + args.value + '"');
+                //self.log('debug', '[EVENT ] Device "' + model.get('name') + '" setting "' + args.key + '" changed to "' + args.value + '"');
                 // if a configuration setting changed, 
                 // save any setting change
                 model.save();
@@ -1368,7 +1376,7 @@
                 return;
             }
             if (msg == 'trigger:setting:change' && args) {
-                //console.log('[EVENT ] Task "' + model.get('name') + '" setting "' + args.key + '" changed to "' + args.value + '"');
+                //self.log('debug', '[EVENT ] Task "' + model.get('name') + '" setting "' + args.key + '" changed to "' + args.value + '"');
                 // save any setting change
                 model.save();
                 // check if this is a trigger we need to respond to

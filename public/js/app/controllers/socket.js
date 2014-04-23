@@ -13,7 +13,6 @@
             var path = (collection && collection.path) ? collection.path : '';
             if (path) {
                 self._socket.on('api:' + path, function (data) {
-                    //console.log('[API] ' + path + ' : ' + data.type + ' / ' + data.id);
                     if (data.id && data.type == 'add') {
                         new collection.model({ id: data.id }).fetch({
                             success: function (model) {  

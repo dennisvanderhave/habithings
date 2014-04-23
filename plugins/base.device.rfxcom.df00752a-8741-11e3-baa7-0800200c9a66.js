@@ -286,7 +286,7 @@
                         }});                        
                     }, 500);
                 } else {
-                    options.callback(resReset, protocol);
+                     if (options.callback) { options.callback(resReset, protocol); }
                 }
             }});
         },
@@ -297,7 +297,7 @@
             function logData(data, handled) {
                 var out = '[RFXCOM] ' + ((handled) ? 'OK ' : '?? ');
                 out = out + data.raw.join(':');
-                console.log(out);
+                self.log(out);
             }
 
             if (data.type == 0x01) {
@@ -313,6 +313,8 @@
                     self.cache.messages = messages;
                 } else if (data.subType == 0xFF) {
                     // 0xFF - wrong command received
+                    logData(data, false);
+                } else {
                     logData(data, false);
                 }
             } else if (data.type == 0x02) {
@@ -337,6 +339,8 @@
                     // "1":"ACK, but transmit started after 3 seconds delay anyway with RF receive data",
                     // "2":"NAK, transmitter did not lock on the requested transmit frequency",
                     // "3":"NAK, AC address zero in id1-id4 not allowed"
+                } else {
+                    logData(data, false);
                 }
             } else if (data.type == 0x03) {
                 // 0x03 - undecoded rf message
@@ -372,14 +376,14 @@
                     // 4: "Group On",
                     // 5: "Set Group Level"
 
-                    // -self.command('interface:' + protCode + ':onData', { data: data });
-                    
-                    
+                    self.command('interface:' + protCode + ':onData', { data: data });
                 } else if (data.subType == 0x01) {
                     // 0x01 - HomeEasy EU
                     logData(data, false);
                 } else if (data.subType == 0x02) {
                     // 0x02 - ANSLUT
+                    logData(data, false);
+                } else {
                     logData(data, false);
                 }
 

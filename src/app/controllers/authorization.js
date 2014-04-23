@@ -11,22 +11,12 @@
                 var funcs = self.app.get('main'); 
                 funcs.users.getByLogin(username, function(users) {
                     var user = (users.length > 0) ? users.models[0] : null;
-                    //if (!user) { return callback(null, false, { message: 'Unknown user.' }); }
-                    //if (user.get('pass') != password) { return callback(null, false, { message: 'Incorrect password.' }); }
-                    //if (!user.get('enabled')) { return callback(null, false, { message: 'Incorrect password.' }); }
                     if (user && user.get('pass') == password && user.get('enabled')) {
                         return callback(null, user); 
                     } else {
                         return callback(null, false, { message: 'Login failed.' });
                     }
                 });
-                //console.log('authenticate?');
-                //if (username == 'admin' && password == 'admin') {
-                //    var user = { id: 1, username: 'admin', password: 'admin' };
-                //    return done(null, user);
-                //} else {
-                //    return done('Invalid user.');
-                //}
             }
         ));
 

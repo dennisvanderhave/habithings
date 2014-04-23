@@ -8,8 +8,8 @@
         self.clients = [];
 
         var server = app.get('server');
-        var io = SocketIO.listen(server);
-        io.set('log level', 1);
+        var io = SocketIO.listen(server, { log: false });
+        //io.set('log level', 1);
         self.io = io;
         self.app.set('socketio', io);   
 

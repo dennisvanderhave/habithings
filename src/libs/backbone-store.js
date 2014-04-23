@@ -90,7 +90,7 @@
                 store.destroy(model, success, error, options);
                 break;
             default:
-                console.error(method);
+                //self.error(method);
         }
 
     }

@@ -37,12 +37,12 @@
                 var state = self.setting('state');
                 var cmd = (state) ? 'protocol:on' : 'protocol:off';
                 self.command(cmd, { unitId: self.cache.unitId, unitCode: self.cache.unitCode, callback: function(result, protocol) {
-                    console.log('state restored');
+                    self.log('state restored');
                 }});
 
-                //console.log('start learn..');
+                //self.log('start learn..');
                 //self.command('protocol:learn', { unitId: unitId, unitCode: unitCode, callback: function(result, protocol) {
-                //    console.log('..learned');
+                //    self.log('..learned');
                 //}});
                 args.callback(true);
             } else {
@@ -51,14 +51,14 @@
         },
         poll: function(args) {
             var self = this;
-            //var unitId = self.functions.numToHexArray(self.setting('unitid'), 4);
-            //var unitCode = self.setting('unitcode');
+            var unitId = self.functions.numToHexArray(self.setting('unitid'), 4);
+            var unitCode = self.setting('unitcode');
 
-            //console.log('on/off start');
+            //self.log('on/off start');
             //self.command('protocol:on', { unitId: unitId, unitCode: unitCode, callback: function(result, protocol) { }});
             //setTimeout(function() {
             //    self.command('protocol:off', { unitId: unitId, unitCode: unitCode, callback: function(result, protocol) {
-            //        console.log('on/off end');
+            //        self.log('on/off end');
             //    }});
             //}, 1000);
 
