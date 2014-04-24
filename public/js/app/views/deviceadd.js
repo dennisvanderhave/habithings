@@ -59,8 +59,8 @@
             var self = this;
             var tpl = '';
             tpl += '<div class="row">';
-            tpl += '  <div data-col="label" class="col-sm-4"><span><strong>' + model.get('label') + '</strong></span></div>';
-            tpl += '  <div data-col="input" class="col-sm-8"></div>';
+            tpl += '  <div data-col="label" class="col-xs-4"><span><strong>' + model.get('label') + '</strong></span></div>';
+            tpl += '  <div data-col="input" class="col-xs-8"></div>';
             tpl += '</div>';
             return tpl;
         },
@@ -76,7 +76,7 @@
                         plugins.push(item);
                     }
                 });
-                var opt = { type: 'list', items: plugins };
+                var opt = { type: 'list', items: plugins, label: model.get('label') };
                 input = new Input(opt);
                 input.on('input:change', function(args) { 
                     if (args && args.value) { 

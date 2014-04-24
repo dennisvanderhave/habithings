@@ -76,7 +76,7 @@
                 server.listen(port, function() {
                     main.log('info', 'HabiThings successfully started');
                     var ip = require('../libs/ip').address();
-                    main.log('info', 'Please connect with your browser to http://%s:%s', ip, port);
+                    main.log('info', 'Please connect with your browser to: http://%s:%s', ip, port);
                     if (app.get('debug')) { main.log('warn', 'Running in development mode'); }
                 });
             }    

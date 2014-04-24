@@ -65,12 +65,13 @@
             var self = this;
 
             self.app.main.isAuthenticated(function(err, result) {
+                self.app.store.refreshAll(function() {});
                 if (result) {
                     self.$el.find('li[data-id="menu"]').removeClass('hidden').addClass('visible-xs');    
-                    $('#menu').removeClass('hidden').addClass('hidden-xs col-sm-2 col-md-3 sidebarstyle1');
+                    $('#menu').find('.menuview').removeClass('hidden');
                 } else {
                     self.$el.find('li[data-id="menu"]').removeClass('visible-xs').addClass('hidden');
-                    $('#menu').removeClass('hidden-xs col-sm-2 col-md-3 sidebarstyle1').addClass('hidden');
+                    $('#menu').find('.menuview').addClass('hidden');
                 }
             });
         }

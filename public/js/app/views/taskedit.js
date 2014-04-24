@@ -89,8 +89,8 @@
             var self = this;
             var tpl = '';
             tpl += '<div class="row">';
-            tpl += '  <div data-col="label" class="col-sm-4"><span><strong>' + model.get('label') + ':</strong></span></div>';
-            tpl += '  <div data-col="input" class="col-sm-8"></div>';
+            tpl += '  <div data-col="label" class="col-xs-4"><span><strong>' + model.get('label') + ':</strong></span></div>';
+            tpl += '  <div data-col="input" class="col-xs-8"></div>';
             tpl += '</div>';
             return tpl;
         },
@@ -107,8 +107,8 @@
             var self = this;
             var tpl = '';
             tpl += '<div class="row">';
-            tpl += '  <div data-col="label" class="col-sm-4"><span><strong>' + model.get('label') + ':</strong></span></div>';
-            tpl += '  <div data-col="input" class="col-sm-8"></div>';
+            tpl += '  <div data-col="label" class="col-xs-4"><span><strong>' + model.get('label') + ':</strong></span></div>';
+            tpl += '  <div data-col="input" class="col-xs-8"></div>';
             tpl += '</div>';
             return tpl;
         },

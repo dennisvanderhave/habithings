@@ -97,6 +97,7 @@
                 icon: device.plugin.definition.icon || 'device',
                 version: device.plugin.definition.version,
                 manufacturer: device.plugin.definition.manufacturer,
+                isSystem: (device.plugin.definition.uuid == self.funcs.systemDevicePluginId) ? true : false, 
                 protocol: device.plugin.definition.protocol,
                 fields: dev_fields,
                 commands: device.plugin.definition.commands || {},
@@ -174,6 +175,7 @@
                 icon: plugin.plugin.definition.icon || 'plugin',
                 version: plugin.plugin.definition.version || '',
                 manufacturer: plugin.plugin.definition.manufacturer || '',
+                isSystem: (plugin.plugin.definition.uuid == self.funcs.systemDevicePluginId) ? true : false, 
                 protocol: plugin.plugin.definition.protocol || '',
                 fields: dev_fields
             }
