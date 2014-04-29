@@ -8,22 +8,30 @@
         manufacturer: 'HabiThings',
         protocol: 'system',
         fields: {
-            cpu: { label: 'CPU Identifier', description: 'The unique identifier for the CPU.', type: 'string', config: true }
+            id: { label: 'Identifier', description: 'The unique identifier for the processor.', type: 'string', config: true },
+            model: { label: 'Model', description: 'The processor model.', type: 'string' },
+            speed: { label: 'Speed', description: 'The processor speed.', type: 'string' },
+            cores: { label: 'Cores', description: 'The number of processor cores.', type: 'number' }
         }
     },
     commands: {
         discover: function(args) {
-            // find an interface on another device that we can use to talk to THIS hardware
-            //   protocol triggers from here (plugin scope), will be send to all protocols of the type we can talk to
-            //   multiple parent devices, which interface that protocol, can respond to a callback-function in a specified argument
-            //   when initiating an instance of the device this plugin represents, make sure that the combination of protocolId + code = unique
             var self = this;
             this.command('protocol:getCPUs', { callback: function(result, protocol) {
-                var _ = require('underscore');
-                _.each(result, function(cpu) {
-                    var optDevice = { 'name': 'CPU ' + cpu.id, protocol: protocol, settings: { cpu: cpu.id } };
-                     args.callback(optDevice);
-                });
+                //var _ = require('underscore');
+                //_.each(result, function(cpu) {
+                //    var optDevice = { 'name': 'CPU ' + cpu.id, protocol: protocol, settings: { cpu: 'cpu' } };
+                //     args.callback(optDevice);
+                //});
+                if (result && result.length > 0) {
+                    var settings = {};
+                    settings.id = 'cpu0';
+                    settings.model = result[0].model || 'Unknown model';
+                    settings.speed = result[0].speed || 'Unknown speed';
+                    settings.cores = result.length || 1;
+                    var optDevice = { 'name': 'CPU', protocol: protocol, settings: settings };
+                    args.callback(optDevice);  
+                }
             } });
         },
         load: function(args) {

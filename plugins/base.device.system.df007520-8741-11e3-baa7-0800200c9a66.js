@@ -30,6 +30,16 @@
                 _.each(os.cpus(), function(cpu, index){ cpus.push({ id: index, model: cpu.model, speed: cpu.speed }); });
                 if (args.callback) { args.callback(cpus); };
             },
+            getDateTime: function(iface, args) {
+                var dt = new Date();
+                //var dt = { date: d };
+                if (args.callback) { args.callback(dt); }; 
+            },
+            getMemory: function(iface, args) {
+                var os = require('os');
+                var mem = { total: os.totalmem(), free: os.freemem() };
+                if (args.callback) { args.callback(mem); }; 
+            },
             getNetworkInterfaces: function(iface, args) {
                 var ip = require('../libs/ip');
                 var ipDefault = ip.address();

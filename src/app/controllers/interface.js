@@ -133,7 +133,10 @@
             if (data.name) { device.attribute('name', data.name); }
             var settings = data.settings || {};
             _.each(_.keys(settings), function(key) {
-                device.setting(key, settings[key]);
+                var field = (device.plugin.definition.fields) ? device.plugin.definition.fields[key] : null;
+                if (field && field.editable) {
+                    device.setting(key, settings[key]);
+                }
             });
             result = self.GetDevice(userId, id);
             if (callback) { callback(result); }

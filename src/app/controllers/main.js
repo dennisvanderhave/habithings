@@ -13,7 +13,8 @@
     }
 
     controller.prototype.defaults = {
-        pollInterval: 10,
+        pollInterval: 60,
+        pollIntervalMin: 5,
         pollTimeout: 2
     }
     controller.prototype.pluginOrigins = ['base', 'custom'];
@@ -142,10 +143,6 @@
 
         if (!type || !id || !msg) { return; }
 
-        if (type != 'system') {
-            //self.log('debug', '[EVENT ] ' + type + ':' + id + ' => ' + msg);
-        }
-
         if (type == 'device') {
             var model = self.devices.get(id);
             if (model) { self.onDevice('event', model, msg, args); }
@@ -166,9 +163,7 @@
     controller.prototype.doMessageBus = function(type, id, msg, args) {
         var self = this;
         
-       if (!type || !id || !msg) { return; }
-
-       //self.log('debug', '[ACTION] ' + type + ':' + id + ' => ' + msg);
+        if (!type || !id || !msg) { return; }
 
         if (type == 'device') {
             var model = self.devices.get(id);
@@ -315,17 +310,17 @@
         if (file) {
             self.getPluginTemplateFromFile(file.location, function(template) {
                 if (template) {
-                    
                     var plugin = {};
                     plugin = copyPluginObject(template);
-
                     // validate the plugin
                     if (self.validatePluginModel(uuid, plugin)) {
                         if (callback) { callback(plugin); }                            
                     } else {
+                        self.log('error', 'Invalid plugin file "' + file.location + '".');
                         if (callback) { callback(); }
                     }    
                 } else {
+                    self.log('error', 'Unable to load plugin "' + file.location + '".');
                     if (callback) { callback(); }
                 }
             });
@@ -835,14 +830,19 @@
         var self = this;
         var logger = self.app.get('logger');
         var args = Array.prototype.slice.call(arguments);
-        logger.log.apply(logger, args);
+        var debug = self.app.get('debug');
+        if (!debug && args && args[0] == 'debug') {
+            // do something else
+        } else {
+            logger.log.apply(logger, args);
+        }
     }
     controller.prototype.pollDevice = function(uuid, force) {
         var self = this;
         var device = self.getEntity('device', uuid);
         if (device) {
             var moment = require('moment');
-            var pollInterval = self.defaults.pollInterval;
+            var pollInterval = Math.max((device.plugin.definition.poll || self.defaults.pollInterval), self.defaults.pollIntervalMin);
             var pollTimeStamp = device.status('pollTimestamp') || 0;
             var activeTimeStamp = device.status('activeTimestamp') || 0;
             var currTimeStamp = parseInt(moment.utc().valueOf() / 1000);
@@ -980,7 +980,7 @@
             return res;
         }
         plugin.log = function(msg) {
-            self.log('silly', msg);
+            self.log('debug', msg);
         }
         plugin.trigger = function(msg, args) { 
             var busMsg = 'trigger:' + msg;
@@ -1136,6 +1136,7 @@
                 return;
             }
             if (msg == 'trigger:setting:change' && args) {
+                self.log('debug', '[EVENT ] Device "' + model.get('name') + '" setting "' + args.key + '" changed to "' + args.value + '"');
                 //self.log('debug', '[EVENT ] Device "' + model.get('name') + '" setting "' + args.key + '" changed to "' + args.value + '"');
                 // if a configuration setting changed, 
                 // save any setting change
@@ -1376,7 +1377,7 @@
                 return;
             }
             if (msg == 'trigger:setting:change' && args) {
-                //self.log('debug', '[EVENT ] Task "' + model.get('name') + '" setting "' + args.key + '" changed to "' + args.value + '"');
+                self.log('debug', 'Task "' + model.get('name') + '" setting "' + args.key + '" changed to "' + args.value + '"');
                 // save any setting change
                 model.save();
                 // check if this is a trigger we need to respond to

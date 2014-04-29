@@ -17,6 +17,12 @@
         getCPUs: function() {
             this.command('server:getCPUs', arguments[0]);
         },
+        getDateTime: function() {
+            this.command('server:getDateTime', arguments[0]);
+        },
+        getMemory: function() {
+            this.command('server:getMemory', arguments[0]);
+        },
         getNetworkInterfaces: function() {
             this.command('server:getNetworkInterfaces', arguments[0]);
         },

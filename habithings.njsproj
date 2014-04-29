@@ -52,6 +52,7 @@
     <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="plugins\base.task.comparenumbers.df00752d-8741-11e3-baa7-0800200c9a66.js" />
     <Compile Include="plugins\base.device.networkinterface.df007523-8741-11e3-baa7-0800200c9a66.js" />
     <Compile Include="plugins\base.device.openweathermaporg.df007525-8741-11e3-baa7-0800200c9a66.js" />
     <Compile Include="plugins\base.device.rfacswitch.df00752c-8741-11e3-baa7-0800200c9a66.js" />
@@ -62,8 +63,8 @@
     <Compile Include="plugins\base.protocol.system.df007521-8741-11e3-baa7-0800200c9a66.js" />
     <Compile Include="plugins\base.device.system.df007520-8741-11e3-baa7-0800200c9a66.js" />
     <Compile Include="plugins\base.device.cpu.df007522-8741-11e3-baa7-0800200c9a66.js" />
-    <Compile Include="plugins\base.task.compare.df007527-8741-11e3-baa7-0800200c9a66.js" />
-    <Compile Include="plugins\base.task.greaterthan.df007526-8741-11e3-baa7-0800200c9a66.js" />
+    <Compile Include="plugins\base.device.ram.df007527-8741-11e3-baa7-0800200c9a66.js" />
+    <Compile Include="plugins\base.device.clock.df007526-8741-11e3-baa7-0800200c9a66.js" />
     <Compile Include="plugins\base.device.serialport.df007528-8741-11e3-baa7-0800200c9a66.js" />
     <Compile Include="public\js\app\app.js" />
     <Compile Include="public\js\app\controllers\main.js" />
